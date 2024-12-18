@@ -2,7 +2,7 @@
 
 builtins.mapAttrs (pname: { doCheck ? true, mainProgram ? pname, subPackages }: buildGoModule rec {
   inherit pname;
-  version = "3.29.0";
+  version = "3.29.1";
 
   src = fetchFromGitHub {
     owner = "projectcalico";
@@ -23,7 +23,7 @@ builtins.mapAttrs (pname: { doCheck ? true, mainProgram ? pname, subPackages }: 
     description = "Cloud native networking and network security";
     license = licenses.asl20;
     maintainers = with maintainers; [ urandom ];
-    platforms = platforms.linux;
+    platforms = platforms.linux ++ platform.darwin;
     inherit mainProgram;
   };
 }) {
