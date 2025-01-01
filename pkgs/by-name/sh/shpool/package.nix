@@ -1,11 +1,4 @@
-{
-  lib,
-  rustPlatform,
-  fetchFromGitHub,
-  linux-pam,
-  testers,
-  shpool,
-}:
+{ lib, rustPlatform, fetchFromGitHub, linux-pam, testers, shpool, }:
 
 rustPlatform.buildRustPackage rec {
   pname = "shpool";
@@ -25,9 +18,7 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-NUo9Y/c4Wm3d8lbhdHEqu9Zp7tX8giq2wnYwz8SMTXo=";
 
-  buildInputs = [
-    linux-pam
-  ];
+  buildInputs = [ linux-pam ];
 
   # The majority of tests rely on impure environment
   # (such as systemd socket, ssh socket), and some of them
@@ -46,11 +37,12 @@ rustPlatform.buildRustPackage rec {
   };
 
   meta = {
-    description = "Persistent session management like tmux, but more lightweight";
+    description =
+      "Persistent session management like tmux, but more lightweight";
     homepage = "https://github.com/shell-pool/shpool";
     license = lib.licenses.asl20;
     mainProgram = "shpool";
     maintainers = with lib.maintainers; [ aleksana ];
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.linux ++ lib.platforms.darwin;
   };
 }
