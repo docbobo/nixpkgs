@@ -34,6 +34,6 @@ buildNpmPackage rec {
     changelog = "https://github.com/emmercm/igir/releases/tag/${src.rev}";
     license = licenses.gpl3Plus;
     maintainers = with maintainers; [ ];
-    platforms = platforms.linux;
+    platforms = platforms.linux ++ platforms.darwin;
   };
 }
