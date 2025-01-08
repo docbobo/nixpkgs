@@ -2,46 +2,54 @@
   lib,
   buildNpmPackage,
   fetchFromGitHub,
-
-  # for patching bundled 7z binary from the 7zip-bin node module
-  # at lib/node_modules/igir/node_modules/7zip-bin/linux/x64/7za
-  autoPatchelfHook,
   stdenv,
+  autoPatchelfHook,
+  SDL2,
+  libuv,
+  lz4,
 }:
-
 buildNpmPackage rec {
   pname = "igir";
-  version = "2.11.0";
+  version = "3.0.1";
 
   src = fetchFromGitHub {
     owner = "emmercm";
     repo = "igir";
     rev = "v${version}";
-    hash = "sha256-NG0ZP8LOm7fZVecErTuLOfbp1yvXwHnwPkWTBzUJXWE=";
+    hash = "sha256-QPUnvirufY3UiSFVxX3xCmpAlzPKg5JxwAnVefdepqU=";
   };
 
-  npmDepsHash = "sha256-ADIEzr6PkGaJz27GKSVyTsrbz5zbud7BUb+OXPtP1Vo=";
+  npmDepsHash = "sha256-hJzgFWUJnEQu+EGD4itv04IQl7Rwm8CYeFELJ9aoTMY=";
 
   # I have no clue why I have to do this
   postPatch = ''
     patchShebangs scripts/update-readme-help.sh
   '';
 
-  nativeBuildInputs = [ autoPatchelfHook ];
+  buildInputs =
+    [
+      (lib.getLib stdenv.cc.cc)
+      SDL2
+    ]
+    ++ lib.optionals stdenv.hostPlatform.isLinux [
+      libuv
+      lz4
+    ];
 
-  buildInputs = [ (lib.getLib stdenv.cc.cc) ];
+  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [ autoPatchelfHook ];
 
-  # from lib/node_modules/igir/node_modules/@node-rs/crc32-linux-x64-musl/crc32.linux-x64-musl.node
-  # Irrelevant to our use
-  autoPatchelfIgnoreMissingDeps = [ "libc.musl-x86_64.so.1" ];
+  postFixup = lib.optionalString stdenv.hostPlatform.isDarwin ''
+    find $out/lib/node_modules/igir/node_modules/@emmercm/ -name chdman -executable -type f \
+      -exec install_name_tool -change /opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib ${SDL2}/lib/libSDL2-2.0.0.dylib {} \;
+  '';
 
-  meta = with lib; {
+  meta = {
     description = "Video game ROM collection manager to help filter, sort, patch, archive, and report on collections on any OS";
     mainProgram = "igir";
     homepage = "https://igir.io";
     changelog = "https://github.com/emmercm/igir/releases/tag/${src.rev}";
-    license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ ];
-    platforms = platforms.linux;
+    license = lib.licenses.gpl3Plus;
+    maintainers = with lib.maintainers; [ ];
+    platforms = with lib.platforms; linux ++ darwin;
   };
 }
