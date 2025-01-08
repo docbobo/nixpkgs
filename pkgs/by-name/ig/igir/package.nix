@@ -1,5 +1,10 @@
-{ lib, buildNpmPackage, fetchFromGitHub, stdenv, SDL2 }:
-
+{
+  lib,
+  buildNpmPackage,
+  fetchFromGitHub,
+  stdenv,
+  SDL2,
+}:
 buildNpmPackage rec {
   pname = "igir";
   version = "3.0.1";
@@ -18,18 +23,20 @@ buildNpmPackage rec {
     patchShebangs scripts/update-readme-help.sh
   '';
 
-  buildInputs = [ (lib.getLib stdenv.cc.cc) SDL2 ];
+  buildInputs = [
+    (lib.getLib stdenv.cc.cc)
+    SDL2
+  ];
 
   dontPatchELF = true;
 
-  meta = with lib; {
-    description =
-      "Video game ROM collection manager to help filter, sort, patch, archive, and report on collections on any OS";
+  meta = {
+    description = "Video game ROM collection manager to help filter, sort, patch, archive, and report on collections on any OS";
     mainProgram = "igir";
     homepage = "https://igir.io";
     changelog = "https://github.com/emmercm/igir/releases/tag/${src.rev}";
-    license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ ];
-    platforms = platforms.linux ++ platforms.darwin;
+    license = lib.licenses.gpl3Plus;
+    maintainers = with lib.maintainers; [ ];
+    platforms = with lib.platforms; linux ++ darwin;
   };
 }
