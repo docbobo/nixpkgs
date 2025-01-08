@@ -4,6 +4,7 @@
   fetchFromGitHub,
   stdenv,
   SDL2,
+  autoPatchelfHook,
 }:
 buildNpmPackage rec {
   pname = "igir";
@@ -28,7 +29,12 @@ buildNpmPackage rec {
     SDL2
   ];
 
-  dontPatchELF = true;
+  nativeBuildInputs = lib.optional stdenv.hostPlatform.isLinux [ autoPatchelfHook ];
+
+  postFixup = lib.optionalString stdenv.hostPlatform.isDarwin ''
+    find $out/lib/node_modules/igir/node_modules/@emmercm/ -name chdman -executable -type f \
+      -exec install_name_tool -change /opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib ${SDL2}/lib/libSDL2-2.0.0.dylib {} \;
+  '';
 
   meta = {
     description = "Video game ROM collection manager to help filter, sort, patch, archive, and report on collections on any OS";
