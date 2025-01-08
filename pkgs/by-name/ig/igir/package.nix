@@ -11,13 +11,13 @@
 
 buildNpmPackage rec {
   pname = "igir";
-  version = "2.11.0";
+  version = "3.0.1";
 
   src = fetchFromGitHub {
     owner = "emmercm";
     repo = "igir";
     rev = "v${version}";
-    hash = "sha256-NG0ZP8LOm7fZVecErTuLOfbp1yvXwHnwPkWTBzUJXWE=";
+    hash = "sha256-QPUnvirufY3UiSFVxX3xCmpAlzPKg5JxwAnVefdepqU=";
   };
 
   npmDepsHash = "sha256-ADIEzr6PkGaJz27GKSVyTsrbz5zbud7BUb+OXPtP1Vo=";
