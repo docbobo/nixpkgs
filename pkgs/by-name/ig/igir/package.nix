@@ -82,7 +82,7 @@ buildNpmPackage rec {
     homepage = "https://igir.io";
     changelog = "https://github.com/emmercm/igir/releases/tag/${src.rev}";
     license = lib.licenses.gpl3Plus;
-    maintainers = with lib.maintainers; [ ];
+    maintainers = with lib.maintainers; [ docbobo ];
     platforms = with lib.platforms; linux ++ darwin;
   };
 }
