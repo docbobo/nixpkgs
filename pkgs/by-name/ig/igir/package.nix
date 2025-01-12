@@ -8,6 +8,7 @@
   libuv,
   lz4,
   #tests
+  testers,
   runCommand,
   igir,
   nodejs,
@@ -74,6 +75,12 @@ buildNpmPackage rec {
         ${npxCmd} maxcso 2> $out
         grep -q "maxcso v1.13.0" $out
       '';
+
+      # maxcso = testers.testVersion {
+      #   package = igir;
+      #   command = "${npxCmd} maxcso";
+      #   version = "v1.13.0";
+      # };
     };
 
   meta = {
